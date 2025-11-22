@@ -189,41 +189,20 @@ export function VideoPlayer({
           data-testid={`video-player-${stream.id}`}
         />
         
-        {/* Loading State */}
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-neutral-900">
-            <div className="text-center space-y-3">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-              <p className="text-sm text-muted-foreground">Loading stream...</p>
-            </div>
-          </div>
-        )}
-
-        {/* Error State */}
-        {hasError && !isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-neutral-900">
-            <div className="text-center space-y-4 p-6">
-              <div className="text-destructive text-4xl">⚠</div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Stream Unavailable</p>
-                <p className="text-xs text-muted-foreground">Unable to load video stream</p>
-              </div>
-              <Button 
-                onClick={handleReload} 
-                variant="outline" 
-                size="sm"
-                data-testid={`button-reload-${stream.id}`}
-              >
-                <RotateCw className="w-4 h-4 mr-2" />
-                Retry
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Live Badge Overlay */}
-        {isLive && !isLoading && !hasError && (
-          <div className="absolute top-3 right-3">
+        {/* No Signal / Live Badge Overlay */}
+        <div className="absolute top-3 right-3">
+          {(isLoading || hasError) ? (
+            <Badge 
+              variant="secondary" 
+              className="flex items-center gap-1.5 px-2 py-1"
+              data-testid={`badge-no-signal-${stream.id}`}
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="inline-flex rounded-full h-2 w-2 bg-muted-foreground"></span>
+              </span>
+              <span className="text-xs font-semibold">NO SIGNAL</span>
+            </Badge>
+          ) : isLive ? (
             <Badge 
               variant="destructive" 
               className="flex items-center gap-1.5 px-2 py-1"
@@ -235,8 +214,8 @@ export function VideoPlayer({
               </span>
               <span className="text-xs font-semibold">LIVE</span>
             </Badge>
-          </div>
-        )}
+          ) : null}
+        </div>
       </div>
 
       {/* Info Bar */}
