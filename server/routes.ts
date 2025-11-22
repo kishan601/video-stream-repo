@@ -4,7 +4,7 @@ import express from "express";
 import { FFmpegStreamManager } from "./ffmpeg-manager";
 
 // RTSP source URL - update this with your actual RTSP stream
-const RTSP_URL = process.env.RTSP_URL || "rtsp://13.60.76.79:8554/live";
+const RTSP_URL = process.env.RTSP_URL || "rtsp://13.60.76.79:8554/live2";
 
 let streamManager: FFmpegStreamManager | null = null;
 
