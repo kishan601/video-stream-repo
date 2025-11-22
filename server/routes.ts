@@ -66,46 +66,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // API: Restart all streams
   app.post('/api/streams/restart', async (req, res) => {
-    }
-
-    try {
-      streamManager.stopAll();
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      await streamManager.startAll();
-      res.json({ success: true, message: 'All streams restarted' });
-    } catch (error) {
-      console.error('Error restarting streams:', error);
-      res.status(500).json({ error: 'Failed to restart streams' });
-    }
+    res.json({ success: true, message: 'Streams are using public HLS sources - no restart needed' });
   });
 
   const httpServer = createServer(app);
 
-  // Start FFmpeg streams when server starts
-  console.log('🚀 Initializing video streaming pipeline...');
-  
-  // Start streams after a short delay to ensure server is ready
-  setTimeout(async () => {
-    try {
-      await streamManager?.startAll();
-    } catch (error) {
-      console.error('❌ Failed to start streams:', error);
-      console.log('💡 Tip: Ensure RTSP source is accessible and FFmpeg is installed');
-    }
-  }, 2000);
-
-  // Cleanup on process exit
-  const cleanup = () => {
-    console.log('\n🛑 Shutting down stream manager...');
-    streamManager?.cleanup();
-    process.exit(0);
-  };
-
-  process.on('SIGTERM', cleanup);
-  process.on('SIGINT', cleanup);
-  process.on('exit', () => {
-    streamManager?.cleanup();
-  });
+  // Log startup info
+  console.log('🎬 Video Streaming Dashboard initialized');
+  console.log(`📊 Serving ${HLS_STREAMS.length} HLS video streams`);
+  console.log('✅ Dashboard ready at http://localhost:5000');
 
   return httpServer;
 }
