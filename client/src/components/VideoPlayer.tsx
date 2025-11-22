@@ -27,6 +27,7 @@ export function VideoPlayer({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isLive, setIsLive] = useState(false);
+  const [showLoadingText, setShowLoadingText] = useState(true);
 
   // Register video ref with parent
   useEffect(() => {
@@ -41,6 +42,11 @@ export function VideoPlayer({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
+    // Hide loading text after 2 seconds (show briefly, then switch to badges)
+    const loadingTimer = setTimeout(() => {
+      setShowLoadingText(false);
+    }, 2000);
 
     if (Hls.isSupported()) {
       const hls = new Hls({
@@ -57,6 +63,7 @@ export function VideoPlayer({
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        setShowLoadingText(false);
         setIsLoading(false);
         setIsLive(true);
         setHasError(false);
@@ -64,6 +71,7 @@ export function VideoPlayer({
 
       hls.on(Hls.Events.ERROR, (event, data) => {
         console.error(`HLS Error on stream ${stream.id}:`, data);
+        setShowLoadingText(false);
         if (data.fatal) {
           setHasError(true);
           setIsLive(false);
@@ -89,12 +97,14 @@ export function VideoPlayer({
       // Native HLS support (Safari)
       video.src = stream.url;
       video.addEventListener('loadedmetadata', () => {
+        setShowLoadingText(false);
         setIsLoading(false);
         setIsLive(true);
       });
     } else {
       setHasError(true);
       setIsLoading(false);
+      setShowLoadingText(false);
     }
 
     // Track play/pause state
@@ -105,6 +115,7 @@ export function VideoPlayer({
     video.addEventListener('pause', handlePause);
 
     return () => {
+      clearTimeout(loadingTimer);
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
       if (hlsRef.current) {
@@ -189,33 +200,42 @@ export function VideoPlayer({
           data-testid={`video-player-${stream.id}`}
         />
         
-        {/* No Signal / Live Badge Overlay */}
-        <div className="absolute top-3 right-3">
-          {(isLoading || hasError) ? (
-            <Badge 
-              variant="secondary" 
-              className="flex items-center gap-1.5 px-2 py-1"
-              data-testid={`badge-no-signal-${stream.id}`}
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="inline-flex rounded-full h-2 w-2 bg-muted-foreground"></span>
-              </span>
-              <span className="text-xs font-semibold">NO SIGNAL</span>
-            </Badge>
-          ) : isLive ? (
-            <Badge 
-              variant="destructive" 
-              className="flex items-center gap-1.5 px-2 py-1"
-              data-testid={`badge-live-${stream.id}`}
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-              </span>
-              <span className="text-xs font-semibold">LIVE</span>
-            </Badge>
-          ) : null}
-        </div>
+        {/* Loading Text - Shows briefly on initial load */}
+        {showLoadingText && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <p className="text-sm text-muted-foreground font-medium">Loading Streams...</p>
+          </div>
+        )}
+
+        {/* No Signal / Live Badge Overlay - Shows after initial loading text */}
+        {!showLoadingText && (
+          <div className="absolute top-3 right-3">
+            {(isLoading || hasError) ? (
+              <Badge 
+                variant="secondary" 
+                className="flex items-center gap-1.5 px-2 py-1"
+                data-testid={`badge-no-signal-${stream.id}`}
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="inline-flex rounded-full h-2 w-2 bg-muted-foreground"></span>
+                </span>
+                <span className="text-xs font-semibold">NO SIGNAL</span>
+              </Badge>
+            ) : isLive ? (
+              <Badge 
+                variant="destructive" 
+                className="flex items-center gap-1.5 px-2 py-1"
+                data-testid={`badge-live-${stream.id}`}
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                </span>
+                <span className="text-xs font-semibold">LIVE</span>
+              </Badge>
+            ) : null}
+          </div>
+        )}
       </div>
 
       {/* Info Bar */}
