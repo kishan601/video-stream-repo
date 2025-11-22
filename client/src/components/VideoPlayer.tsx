@@ -200,10 +200,11 @@ export function VideoPlayer({
           data-testid={`video-player-${stream.id}`}
         />
         
-        {/* Loading Text - Shows briefly on initial load */}
+        {/* Loading Animation - Shows briefly on initial load */}
         {showLoadingText && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-sm text-muted-foreground font-medium">Loading Streams...</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted-foreground border-t-foreground"></div>
+            <p className="text-xs text-muted-foreground font-medium">Loading Streams...</p>
           </div>
         )}
 
