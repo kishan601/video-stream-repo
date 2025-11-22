@@ -1,0 +1,7 @@
+In progress tasks
+0 / 5
+Add stream health monitoring with bandwidth and latency metrics
+Implement playback rate adjustment for fine-tuned synchronization
+Add individual stream controls and full-screen mode for each player
+Create recording functionality to capture synchronized multi-view sessions
+Add timestamp overlay and frame-accurate timecode display
