@@ -2,10 +2,10 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import express from "express";
 
-// Working HLS stream URLs from public sources
+// Working HLS stream URLs - mix of public sources and local uploads
 const HLS_STREAMS = [
-  "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-  "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8",
+  "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",  // External
+  "/streams/my-video/playlist.m3u8",                     // LOCAL: Upload your HLS files here
   "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8",
   "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.mp4/.m3u8",
   "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
