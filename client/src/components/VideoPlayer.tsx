@@ -12,6 +12,7 @@ interface VideoPlayerProps {
   drift?: number;
   onVideoRef?: (streamId: number, video: HTMLVideoElement | null) => void;
   className?: string;
+  isMobile?: boolean;
 }
 
 export function VideoPlayer({ 
@@ -19,7 +20,8 @@ export function VideoPlayer({
   isMaster = false, 
   drift = 0,
   onVideoRef,
-  className = ""
+  className = "",
+  isMobile = false
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
@@ -240,64 +242,72 @@ export function VideoPlayer({
       </div>
 
       {/* Info Bar */}
-      <div className="flex items-center justify-between px-4 py-2 h-10 border-t border-card-border">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium" data-testid={`text-stream-name-${stream.id}`}>
-            {stream.name}
+      <div className={`flex items-center justify-between px-3 border-t border-card-border ${isMobile ? "py-1.5 h-8" : "px-4 py-2 h-10"}`}>
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className={`font-medium ${isMobile ? "text-xs" : "text-sm"}`} data-testid={`text-stream-name-${stream.id}`}>
+            {isMobile ? `S${stream.id}` : stream.name}
           </span>
-          {isMaster && (
+          {isMaster && !isMobile && (
             <Badge variant="outline" className="text-xs px-1.5 py-0.5">
               MASTER
             </Badge>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          <span 
-            className={`inline-flex h-2 w-2 rounded-full bg-${syncStatus.color}`}
-            data-testid={`indicator-sync-${stream.id}`}
-          />
-          <span className="text-xs font-mono text-muted-foreground" data-testid={`text-drift-${stream.id}`}>
-            {drift >= 0 ? '+' : ''}{drift.toFixed(2)}s
-          </span>
-        </div>
+        {!isMobile && (
+          <div className="flex items-center gap-2">
+            <span 
+              className={`inline-flex h-2 w-2 rounded-full bg-${syncStatus.color}`}
+              data-testid={`indicator-sync-${stream.id}`}
+            />
+            <span className="text-xs font-mono text-muted-foreground" data-testid={`text-drift-${stream.id}`}>
+              {drift >= 0 ? '+' : ''}{drift.toFixed(2)}s
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Control Bar */}
-      <div className="flex items-center gap-2 px-4 py-2 h-12 border-t border-card-border">
+      <div className={`flex items-center gap-1.5 border-t border-card-border ${isMobile ? "px-2 py-1.5 h-9" : "px-4 py-2 h-12 gap-2"}`}>
         <Button
           onClick={handlePlayPause}
           variant="ghost"
-          size="icon"
+          size={isMobile ? "sm" : "icon"}
           disabled={isLoading || hasError}
           data-testid={`button-play-pause-${stream.id}`}
+          className={isMobile ? "h-7 w-7" : ""}
         >
           {isPlaying ? (
-            <Pause className="w-4 h-4" />
+            <Pause className="w-3.5 h-3.5" />
           ) : (
-            <Play className="w-4 h-4" />
+            <Play className="w-3.5 h-3.5" />
           )}
         </Button>
         <Button
           onClick={handleReload}
           variant="ghost"
-          size="icon"
+          size={isMobile ? "sm" : "icon"}
           disabled={isLoading}
           data-testid={`button-reload-stream-${stream.id}`}
+          className={isMobile ? "h-7 w-7" : ""}
         >
-          <RotateCw className="w-4 h-4" />
+          <RotateCw className="w-3.5 h-3.5" />
         </Button>
-        <Button
-          onClick={handleFullscreen}
-          variant="ghost"
-          size="icon"
-          disabled={isLoading || hasError}
-          data-testid={`button-fullscreen-${stream.id}`}
-        >
-          <Maximize2 className="w-4 h-4" />
-        </Button>
-        <div className="ml-auto text-xs text-muted-foreground">
-          {syncStatus.label}
-        </div>
+        {!isMobile && (
+          <>
+            <Button
+              onClick={handleFullscreen}
+              variant="ghost"
+              size="icon"
+              disabled={isLoading || hasError}
+              data-testid={`button-fullscreen-${stream.id}`}
+            >
+              <Maximize2 className="w-4 h-4" />
+            </Button>
+            <div className="ml-auto text-xs text-muted-foreground">
+              {syncStatus.label}
+            </div>
+          </>
+        )}
       </div>
     </Card>
   );
