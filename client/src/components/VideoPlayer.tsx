@@ -84,7 +84,37 @@ export function VideoPlayer({
       setShowLoadingText(false);
     }, 2000);
 
-    if (Hls.isSupported()) {
+    // Check if this is an MP4 file (not an HLS stream)
+    const isMP4 = stream.url.endsWith('.mp4');
+
+    if (isMP4) {
+      // Direct MP4 playback - no HLS.js needed
+      video.src = stream.url;
+      
+      const handleLoadedMetadata = () => {
+        setShowLoadingText(false);
+        setIsLoading(false);
+        setIsLive(true);
+        setHasError(false);
+      };
+
+      const handleError = () => {
+        console.error(`Media error on stream ${stream.id}`);
+        setShowLoadingText(false);
+        setHasError(true);
+        setIsLive(false);
+      };
+
+      video.addEventListener('loadedmetadata', handleLoadedMetadata);
+      video.addEventListener('error', handleError);
+
+      return () => {
+        clearTimeout(loadingTimer);
+        video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        video.removeEventListener('error', handleError);
+      };
+    } else if (Hls.isSupported()) {
+      // HLS stream playback
       const hls = new Hls(getHlsConfig(stream.url));
 
       hls.loadSource(stream.url);
