@@ -6,6 +6,40 @@ import { Badge } from "@/components/ui/badge";
 import { Play, Pause, RotateCw, Maximize2 } from "lucide-react";
 import type { StreamConfig } from "@shared/schema";
 
+// Detect if URL is a local VOD file or live stream
+const isLocalVOD = (url: string): boolean => {
+  return url.includes('/streams/') || url.startsWith('/');
+};
+
+// Get HLS config based on stream type
+const getHlsConfig = (url: string) => {
+  const isVOD = isLocalVOD(url);
+  
+  if (isVOD) {
+    // VOD settings: prioritize buffering for smooth playback
+    return {
+      enableWorker: true,
+      lowLatencyMode: false,
+      backBufferLength: 90,
+      maxBufferLength: 60,
+      maxMaxBufferLength: 120,
+      liveSyncDuration: 15,
+      liveMaxLatencyDuration: 30,
+    };
+  } else {
+    // Live stream settings: prioritize low latency for real-time
+    return {
+      enableWorker: true,
+      lowLatencyMode: true,
+      backBufferLength: 30,
+      maxBufferLength: 30,
+      maxMaxBufferLength: 60,
+      liveSyncDuration: 3,
+      liveMaxLatencyDuration: 10,
+    };
+  }
+};
+
 interface VideoPlayerProps {
   stream: StreamConfig;
   isMaster?: boolean;
@@ -51,15 +85,7 @@ export function VideoPlayer({
     }, 2000);
 
     if (Hls.isSupported()) {
-      const hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: false,
-        backBufferLength: 90,
-        maxBufferLength: 60,
-        maxMaxBufferLength: 120,
-        liveSyncDuration: 15,
-        liveMaxLatencyDuration: 30,
-      });
+      const hls = new Hls(getHlsConfig(stream.url));
 
       hls.loadSource(stream.url);
       hls.attachMedia(video);
@@ -153,14 +179,7 @@ export function VideoPlayer({
     }
 
     // Recreate HLS instance
-    const hls = new Hls({
-      enableWorker: true,
-      lowLatencyMode: false,
-      maxBufferLength: 60,
-      maxMaxBufferLength: 120,
-      liveSyncDuration: 15,
-      liveMaxLatencyDuration: 30,
-    });
+    const hls = new Hls(getHlsConfig(stream.url));
 
     hls.loadSource(stream.url);
     hls.attachMedia(video);
