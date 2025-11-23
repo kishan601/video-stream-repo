@@ -10,7 +10,9 @@ import { useIsMobile } from "@/hooks/useMediaQuery";
 import type { StreamsResponse } from "@shared/schema";
 
 // Lazy load bottom panel for performance
-const BottomPanel = lazy(() => import("@/components/BottomPanel").then(m => ({ default: m.BottomPanel })));
+const BottomPanel = lazy(() => 
+  import("@/components/BottomPanel").then(m => ({ default: m.BottomPanel }))
+);
 
 export default function Dashboard() {
   const isMobile = useIsMobile();
