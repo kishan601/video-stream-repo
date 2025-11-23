@@ -198,12 +198,28 @@ export class VideoSyncManager {
     if (!master) return;
 
     const masterTime = master.video.currentTime;
+    const masterPlaying = !master.video.paused;
 
+    // Aggressively sync all videos to master
     this.videos.forEach(({ video }, index) => {
       if (index !== this.masterIndex) {
+        // Force seek
         video.currentTime = masterTime;
+        
+        // Force playback state
+        if (masterPlaying) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+        
+        // Reset playback rate
+        video.playbackRate = 1.0;
       }
     });
+
+    // Trigger immediate sync check to update UI
+    this.sync();
   }
 
   /**
