@@ -100,15 +100,6 @@ export class VideoSyncManager {
       const drift = video.currentTime - masterTime;
       const absDrift = Math.abs(drift);
 
-      // Sync playback state
-      if (masterPlaying && video.paused) {
-        video.play().catch(() => {
-          // Ignore autoplay errors
-        });
-      } else if (!masterPlaying && !video.paused) {
-        video.pause();
-      }
-
       // Skip master
       if (index === this.masterIndex) {
         syncStates.push({
@@ -119,6 +110,9 @@ export class VideoSyncManager {
         });
         return;
       }
+
+      // Only sync TIME position, NOT playback state - let each stream play/pause independently
+      // This ensures drift correction but preserves individual play/pause control
 
       // Correct drift
       if (absDrift > this.MAJOR_DRIFT_THRESHOLD) {
@@ -189,7 +183,7 @@ export class VideoSyncManager {
   }
 
   /**
-   * Force immediate resynchronization
+   * Force immediate resynchronization (time position only, preserves individual play/pause state)
    */
   forceSync() {
     if (this.videos.length === 0) return;
@@ -198,20 +192,12 @@ export class VideoSyncManager {
     if (!master) return;
 
     const masterTime = master.video.currentTime;
-    const masterPlaying = !master.video.paused;
 
-    // Aggressively sync all videos to master
+    // Sync time position only - DO NOT force playback state
     this.videos.forEach(({ video }, index) => {
       if (index !== this.masterIndex) {
-        // Force seek
+        // Force seek to master time
         video.currentTime = masterTime;
-        
-        // Force playback state
-        if (masterPlaying) {
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
         
         // Reset playback rate
         video.playbackRate = 1.0;
