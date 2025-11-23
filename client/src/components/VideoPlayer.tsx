@@ -16,15 +16,15 @@ const getHlsConfig = (url: string) => {
   const isVOD = isLocalVOD(url);
   
   if (isVOD) {
-    // VOD settings: prioritize buffering for smooth playback
+    // VOD settings: balance between buffering and performance
     return {
       enableWorker: true,
       lowLatencyMode: false,
-      backBufferLength: 90,
-      maxBufferLength: 60,
-      maxMaxBufferLength: 120,
-      liveSyncDuration: 15,
-      liveMaxLatencyDuration: 30,
+      backBufferLength: 60,
+      maxBufferLength: 40,
+      maxMaxBufferLength: 80,
+      liveSyncDuration: 10,
+      liveMaxLatencyDuration: 20,
     };
   } else {
     // Live stream settings: prioritize low latency for real-time
@@ -32,8 +32,8 @@ const getHlsConfig = (url: string) => {
       enableWorker: true,
       lowLatencyMode: true,
       backBufferLength: 30,
-      maxBufferLength: 30,
-      maxMaxBufferLength: 60,
+      maxBufferLength: 25,
+      maxMaxBufferLength: 50,
       liveSyncDuration: 3,
       liveMaxLatencyDuration: 10,
     };

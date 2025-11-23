@@ -25,9 +25,9 @@ export class VideoSyncManager {
   private videos: VideoElement[] = [];
   private masterIndex: number = 0;
   private syncInterval: NodeJS.Timeout | null = null;
-  private readonly SYNC_CHECK_INTERVAL = 1000; // Check sync every 1 second
-  private readonly MINOR_DRIFT_THRESHOLD = 0.3; // 300ms
-  private readonly MAJOR_DRIFT_THRESHOLD = 1.0; // 1 second
+  private readonly SYNC_CHECK_INTERVAL = 2000; // Check sync every 2 seconds (reduced from 1s for performance)
+  private readonly MINOR_DRIFT_THRESHOLD = 0.5; // 500ms (increased from 300ms to reduce corrections)
+  private readonly MAJOR_DRIFT_THRESHOLD = 1.5; // 1.5 seconds (increased from 1s to reduce aggressive seeking)
   private onSyncUpdate?: (states: SyncState[]) => void;
 
   constructor(onSyncUpdate?: (states: SyncState[]) => void) {
