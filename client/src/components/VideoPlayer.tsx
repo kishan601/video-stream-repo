@@ -55,10 +55,10 @@ export function VideoPlayer({
         enableWorker: true,
         lowLatencyMode: false,
         backBufferLength: 90,
-        liveSyncDuration: 3,
-        liveMaxLatencyDuration: 10,
-        maxBufferLength: 30,
-        maxMaxBufferLength: 60,
+        maxBufferLength: 60,
+        maxMaxBufferLength: 120,
+        liveSyncDuration: 15,
+        liveMaxLatencyDuration: 30,
       });
 
       hls.loadSource(stream.url);
@@ -156,8 +156,10 @@ export function VideoPlayer({
     const hls = new Hls({
       enableWorker: true,
       lowLatencyMode: false,
-      liveSyncDuration: 3,
-      liveMaxLatencyDuration: 10,
+      maxBufferLength: 60,
+      maxMaxBufferLength: 120,
+      liveSyncDuration: 15,
+      liveMaxLatencyDuration: 30,
     });
 
     hls.loadSource(stream.url);
