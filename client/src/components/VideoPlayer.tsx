@@ -206,21 +206,39 @@ export function VideoPlayer({
     
     if (hlsRef.current) {
       hlsRef.current.destroy();
+      hlsRef.current = null;
     }
 
-    // Recreate HLS instance
-    const hls = new Hls(getHlsConfig(stream.url));
+    const isMP4 = stream.url.endsWith('.mp4');
 
-    hls.loadSource(stream.url);
-    hls.attachMedia(video);
+    if (isMP4) {
+      // Reload MP4 file
+      video.src = stream.url;
+      video.load();
+      
+      const handleLoadedMetadata = () => {
+        setIsLoading(false);
+        setIsLive(true);
+        video.play().catch(() => {});
+        video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      };
 
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      setIsLoading(false);
-      setIsLive(true);
-      video.play().catch(() => {});
-    });
+      video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    } else {
+      // Reload HLS stream
+      const hls = new Hls(getHlsConfig(stream.url));
 
-    hlsRef.current = hls;
+      hls.loadSource(stream.url);
+      hls.attachMedia(video);
+
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        setIsLoading(false);
+        setIsLive(true);
+        video.play().catch(() => {});
+      });
+
+      hlsRef.current = hls;
+    }
   };
 
   const handleFullscreen = () => {
