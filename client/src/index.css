@@ -57,6 +57,11 @@
   --shadow-2xl: 0px 2px 0px 0px hsl(210 6% 12% / 0.00);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+  --cinema-dark: rgb(15, 10, 20);
+  --glass: rgba(255, 255, 255, 0.08);
+  --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.3);
+  --glow-purple: 0 0 20px rgba(168, 85, 247, 0.3);
+  --glow-red: 0 0 15px rgba(239, 68, 68, 0.4);
 
 /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
@@ -93,36 +98,36 @@
   --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
-  --background: 210 25% 12%;
+  --background: 260 40% 3%;
   --foreground: 210 5% 96%;
-  --border: 210 25% 20%;
-  --card: 210 25% 12%;
+  --border: 260 30% 12%;
+  --card: 260 35% 6%;
   --card-foreground: 210 5% 96%;
-  --card-border: 210 25% 18%;
-  --sidebar: 210 25% 14%;
+  --card-border: 260 25% 15%;
+  --sidebar: 260 35% 8%;
   --sidebar-foreground: 210 5% 92%;
-  --sidebar-border: 210 25% 20%;
-  --sidebar-primary: 210 92% 52%;
+  --sidebar-border: 260 30% 14%;
+  --sidebar-primary: 180 80% 50%;
   --sidebar-primary-foreground: 210 10% 98%;
-  --sidebar-accent: 210 25% 22%;
+  --sidebar-accent: 260 30% 20%;
   --sidebar-accent-foreground: 210 5% 92%;
-  --sidebar-ring: 210 92% 52%;
-  --popover: 210 25% 16%;
+  --sidebar-ring: 180 80% 50%;
+  --popover: 260 35% 10%;
   --popover-foreground: 210 5% 96%;
-  --popover-border: 210 25% 22%;
-  --primary: 210 92% 52%;
+  --popover-border: 260 25% 18%;
+  --primary: 180 80% 50%;
   --primary-foreground: 210 10% 98%;
-  --secondary: 210 25% 22%;
+  --secondary: 260 30% 18%;
   --secondary-foreground: 210 5% 96%;
-  --muted: 210 25% 18%;
+  --muted: 260 30% 15%;
   --muted-foreground: 210 5% 68%;
-  --accent: 210 25% 20%;
+  --accent: 260 25% 20%;
   --accent-foreground: 210 5% 96%;
-  --destructive: 0 84% 48%;
+  --destructive: 0 84% 52%;
   --destructive-foreground: 0 10% 98%;
-  --input: 210 25% 28%;
-  --ring: 210 92% 52%;
-  --chart-1: 210 88% 65%;
+  --input: 260 35% 18%;
+  --ring: 180 80% 50%;
+  --chart-1: 180 80% 55%;
   --chart-2: 180 75% 62%;
   --chart-3: 270 70% 68%;
   --chart-4: 30 85% 65%;
@@ -284,5 +289,45 @@
   .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
+  }
+}
+
+/* Glassmorphism & Cinema Effects */
+.bg-cinema-dark {
+  background-color: rgb(15, 10, 20);
+}
+
+.border-glass {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.bg-glass {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.shadow-glass {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.shadow-glow-red {
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+}
+
+.hover-glow:active {
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .backdrop-blur-sm {
+    backdrop-filter: blur(10px);
   }
 }
