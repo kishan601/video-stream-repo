@@ -129,13 +129,13 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-animated">
       {/* Header */}
-      <header className="h-14 md:h-16 border-b border-border sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="h-14 md:h-16 border-b border-glass header-glow sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-3 md:px-6 h-full flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 md:gap-3 min-w-0">
             <Activity className="w-5 h-5 md:w-6 md:h-6 text-primary flex-shrink-0" />
-            <h1 className="text-lg md:text-2xl font-bold truncate" data-testid="text-title">
+            <h1 className="text-lg md:text-2xl font-bold truncate text-gradient-cyan text-title-pulse" data-testid="text-title">
               {isMobile ? "Video Dashboard" : "Video Monitoring Dashboard"}
             </h1>
           </div>
@@ -143,8 +143,8 @@ export default function Dashboard() {
           {!isMobile && (
             <div className="flex items-center gap-4">
               {/* Sync Health Indicator */}
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-card border border-card-border">
-                <span className={`inline-flex h-2.5 w-2.5 rounded-full bg-${syncHealth.color}`} />
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-card border border-glass shadow-glass badge-animate hover-glow">
+                <span className={`inline-flex h-2.5 w-2.5 rounded-full bg-${syncHealth.color} animate-pulse`} />
                 <span className="text-sm font-medium" data-testid="text-sync-status">{syncHealth.status}</span>
               </div>
 
@@ -189,17 +189,17 @@ export default function Dashboard() {
       {/* Video Grid */}
       <main className={`container mx-auto px-2 md:px-6 ${isMobile ? "pb-28" : "pb-24"}`}>
         {isLoading ? (
-          <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"} gap-2 md:gap-4 py-4`}>
+          <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"} gap-4 md:gap-6 py-6`}>
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="space-y-2">
-                <Skeleton className="aspect-video w-full" />
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-10 w-full" />
+              <div key={i} className="space-y-3">
+                <Skeleton className="aspect-video w-full rounded-lg skeleton-animated" />
+                <Skeleton className="h-8 w-full rounded-md skeleton-animated" />
+                <Skeleton className="h-10 w-full rounded-md skeleton-animated" />
               </div>
             ))}
           </div>
         ) : (
-          <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"} gap-2 md:gap-4 py-4`} data-testid="grid-videos">
+          <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"} gap-4 md:gap-6 py-6`} data-testid="grid-videos">
             {streamsData?.streams.map((stream, index) => (
               <VideoPlayer
                 key={stream.id}

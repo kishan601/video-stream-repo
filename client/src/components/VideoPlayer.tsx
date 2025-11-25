@@ -274,7 +274,7 @@ export function VideoPlayer({
   const syncStatus = getSyncStatus();
 
   return (
-    <Card className={`overflow-hidden backdrop-blur-sm border-glass shadow-glass ${className}`} data-testid={`card-stream-${stream.id}`}>
+    <Card className={`overflow-hidden backdrop-blur-sm border-glass shadow-glass card-hover-lift ${className}`} data-testid={`card-stream-${stream.id}`}>
       {/* Video Container */}
       <div className="relative aspect-video bg-cinema-dark">
         <video
@@ -310,7 +310,7 @@ export function VideoPlayer({
             ) : isLive ? (
               <Badge 
                 variant="destructive" 
-                className="flex items-center gap-1.5 px-2 py-1 shadow-glow-red"
+                className="flex items-center gap-1.5 px-2 py-1 shadow-glow-red badge-animate"
                 data-testid={`badge-live-${stream.id}`}
               >
                 <span className="relative flex h-2 w-2">
@@ -350,14 +350,14 @@ export function VideoPlayer({
       </div>
 
       {/* Control Bar */}
-      <div className={`flex items-center gap-1.5 border-t border-glass bg-glass/30 ${isMobile ? "px-2 py-1.5 h-9" : "px-4 py-2 h-12 gap-2"}`}>
+      <div className={`flex items-center gap-1.5 border-t border-glass bg-glass/30 backdrop-blur-sm ${isMobile ? "px-2 py-1.5 h-9" : "px-4 py-2 h-12 gap-2"}`}>
         <Button
           onClick={handlePlayPause}
           variant="ghost"
           size={isMobile ? "sm" : "icon"}
           disabled={isLoading || hasError}
           data-testid={`button-play-pause-${stream.id}`}
-          className={`hover-glow ${isMobile ? "h-7 w-7" : ""}`}
+          className={`hover-glow button-ripple ${isMobile ? "h-7 w-7" : ""}`}
         >
           {isPlaying ? (
             <Pause className="w-3.5 h-3.5" />
@@ -371,7 +371,7 @@ export function VideoPlayer({
           size={isMobile ? "sm" : "icon"}
           disabled={isLoading || hasError}
           data-testid={`button-volume-${stream.id}`}
-          className={`hover-glow ${isMobile ? "h-7 w-7" : ""}`}
+          className={`hover-glow button-ripple ${isMobile ? "h-7 w-7" : ""}`}
         >
           {isMuted ? (
             <VolumeX className="w-3.5 h-3.5" />
@@ -385,7 +385,7 @@ export function VideoPlayer({
           size={isMobile ? "sm" : "icon"}
           disabled={isLoading}
           data-testid={`button-reload-stream-${stream.id}`}
-          className={`hover-glow ${isMobile ? "h-7 w-7" : ""}`}
+          className={`hover-glow button-ripple ${isMobile ? "h-7 w-7" : ""}`}
         >
           <RotateCw className="w-3.5 h-3.5" />
         </Button>
@@ -397,7 +397,7 @@ export function VideoPlayer({
               size="icon"
               disabled={isLoading || hasError}
               data-testid={`button-fullscreen-${stream.id}`}
-              className="hover-glow"
+              className="hover-glow button-ripple"
             >
               <Maximize2 className="w-4 h-4" />
             </Button>
