@@ -3,7 +3,7 @@ import Hls from "hls.js";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Play, Pause, RotateCw, Maximize2, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, RotateCw, Maximize2, Volume2, VolumeX, Settings } from "lucide-react";
 import type { StreamConfig } from "@shared/schema";
 
 // Detect if URL is a local VOD file or live stream
@@ -65,6 +65,11 @@ export function VideoPlayer({
   const [isLive, setIsLive] = useState(false);
   const [showLoadingText, setShowLoadingText] = useState(true);
   const [isMuted, setIsMuted] = useState(!isMaster);
+  const [isMP4, setIsMP4] = useState(false);
+  const [qualityLevels, setQualityLevels] = useState<Array<{ level: number; height: number; bitrate: number }>>([]);
+  const [selectedQuality, setSelectedQuality] = useState<number>(-1);
+  const [currentBitrate, setCurrentBitrate] = useState<string>("Auto");
+  const [showQualityMenu, setShowQualityMenu] = useState(false);
 
   // Register video ref with parent
   useEffect(() => {
@@ -86,9 +91,10 @@ export function VideoPlayer({
     }, 2000);
 
     // Check if this is an MP4 file (not an HLS stream)
-    const isMP4 = stream.url.endsWith('.mp4');
+    const isMp4File = stream.url.endsWith('.mp4');
+    setIsMP4(isMp4File);
 
-    if (isMP4) {
+    if (isMp4File) {
       // Direct MP4 playback - no HLS.js needed
       video.src = stream.url;
       
@@ -126,6 +132,16 @@ export function VideoPlayer({
         setIsLoading(false);
         setIsLive(true);
         setHasError(false);
+        
+        // Extract quality levels
+        const levels = hls.levels.map((level, index) => ({
+          level: index,
+          height: level.height || 0,
+          bitrate: Math.round(level.bitrate / 1000) // Convert to kbps
+        }));
+        setQualityLevels(levels);
+        setSelectedQuality(-1); // -1 = Auto
+        setCurrentBitrate("Auto");
       });
 
       hls.on(Hls.Events.ERROR, (event, data) => {
@@ -264,6 +280,26 @@ export function VideoPlayer({
     }
   };
 
+  const handleQualityChange = (levelIndex: number) => {
+    if (!hlsRef.current) return;
+    
+    if (levelIndex === -1) {
+      // Auto mode
+      hlsRef.current.currentLevel = -1;
+      setSelectedQuality(-1);
+      setCurrentBitrate("Auto");
+    } else {
+      // Manual quality selection
+      hlsRef.current.currentLevel = levelIndex;
+      const level = qualityLevels[levelIndex];
+      if (level) {
+        setSelectedQuality(levelIndex);
+        setCurrentBitrate(`${level.height}p • ${level.bitrate}kbps`);
+      }
+    }
+    setShowQualityMenu(false);
+  };
+
   const getSyncStatus = () => {
     const absDrift = Math.abs(drift);
     if (absDrift < 0.1) return { label: "In Sync", color: "status-online" };
@@ -388,6 +424,64 @@ export function VideoPlayer({
         >
           <RotateCw className="w-3.5 h-3.5" />
         </Button>
+        
+        {/* Quality Selector - Only for HLS streams */}
+        {!isMP4 && !isMobile && qualityLevels.length > 0 && (
+          <div className="relative">
+            <Button
+              onClick={() => setShowQualityMenu(!showQualityMenu)}
+              variant="ghost"
+              size="icon"
+              disabled={isLoading}
+              data-testid={`button-quality-${stream.id}`}
+              className="hover-glow button-ripple"
+            >
+              <Settings className="w-4 h-4" />
+            </Button>
+            
+            {/* Quality Menu Dropdown */}
+            {showQualityMenu && (
+              <div className="absolute bottom-full right-0 mb-2 bg-card border border-glass rounded-lg shadow-glass p-2 min-w-48 z-50">
+                <div className="text-xs font-semibold px-2 py-1 text-muted-foreground mb-1">Quality</div>
+                
+                {/* Auto Option */}
+                <button
+                  onClick={() => handleQualityChange(-1)}
+                  className={`w-full text-left px-3 py-2 rounded text-xs hover:bg-glass transition-all ${
+                    selectedQuality === -1 ? 'bg-primary text-primary-foreground' : 'text-foreground'
+                  }`}
+                  data-testid={`option-quality-auto-${stream.id}`}
+                >
+                  <span className="font-medium">Auto</span>
+                  <span className="ml-2 text-muted-foreground">({currentBitrate})</span>
+                </button>
+                
+                {/* Manual Quality Options */}
+                {qualityLevels.map((level) => (
+                  <button
+                    key={level.level}
+                    onClick={() => handleQualityChange(level.level)}
+                    className={`w-full text-left px-3 py-2 rounded text-xs hover:bg-glass transition-all ${
+                      selectedQuality === level.level ? 'bg-primary text-primary-foreground' : 'text-foreground'
+                    }`}
+                    data-testid={`option-quality-${level.height}p-${stream.id}`}
+                  >
+                    <span className="font-medium">{level.height}p</span>
+                    <span className="ml-2 text-muted-foreground">{level.bitrate}kbps</span>
+                  </button>
+                ))}
+                
+                {/* Current Bitrate Display */}
+                {!isLoading && (
+                  <div className="border-t border-glass mt-2 pt-2 px-2 text-xs text-muted-foreground">
+                    Current: <span className="font-mono text-cyan-400">{currentBitrate}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+        
         {!isMobile && (
           <>
             <Button
