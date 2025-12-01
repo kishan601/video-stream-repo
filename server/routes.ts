@@ -69,6 +69,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ success: true, message: 'Streams are using public HLS sources - no restart needed' });
   });
 
+  // API: Health ping endpoint for cron job (keeps Render from sleeping)
+  app.get('/api/ping', (req, res) => {
+    res.json({ 
+      status: 'alive',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      streams: streamConfigs.length
+    });
+  });
+
   const httpServer = createServer(app);
 
   // Log startup info

@@ -55,6 +55,46 @@ npm run dev
 
 Open your browser and navigate to `http://localhost:5000`. The dashboard will automatically load with 6 demo video streams!
 
+## 🔄 Keep-Alive Cron Job (Render Deployment)
+
+To prevent your Render app from sleeping during inactivity, configure a cron job to ping the health endpoint:
+
+### Setup Instructions
+
+1. **Go to your Render Dashboard** - https://dashboard.render.com
+2. **Create a new Cron Job:**
+   - Click "New +" → Select "Cron Job"
+   - **Name:** `video-dashboard-ping`
+   - **Schedule:** `*/10 * * * *` (every 10 minutes)
+   - **Command:** 
+     ```bash
+     curl https://video-stream-repo.onrender.com/api/ping
+     ```
+   - **Notifications:** Choose your preference
+   - Click "Create Cron Job"
+
+### How It Works
+- The cron job calls `/api/ping` every 10 minutes
+- This keeps your app active and prevents Render from hibernating it
+- Response includes uptime, stream count, and timestamp
+- Zero impact on performance - lightweight health check
+
+### Test the Endpoint
+Verify your endpoint is working:
+```bash
+curl https://video-stream-repo.onrender.com/api/ping
+```
+
+Expected response:
+```json
+{
+  "status": "alive",
+  "timestamp": "2025-12-01T12:34:56.789Z",
+  "uptime": 3600.5,
+  "streams": 6
+}
+```
+
 ## 🏗️ Architecture
 
 ### Tech Stack
