@@ -57,21 +57,18 @@ Open your browser and navigate to `http://localhost:5000`. The dashboard will au
 
 ## 🔄 Keep-Alive Cron Job (Render Deployment)
 
-To prevent your Render app from sleeping during inactivity, configure a cron job to ping the health endpoint:
+To prevent your Render app from sleeping during inactivity, configure a cron job to ping the health endpoint using **cron-job.org**:
 
-### Setup Instructions
+### Setup Instructions on cron-job.org
 
-1. **Go to your Render Dashboard** - https://dashboard.render.com
+1. **Go to cron-job.org** - https://cron-job.org/en/
 2. **Create a new Cron Job:**
-   - Click "New +" → Select "Cron Job"
-   - **Name:** `video-dashboard-ping`
-   - **Schedule:** `*/10 * * * *` (every 10 minutes)
-   - **Command:** 
-     ```bash
-     curl https://video-stream-repo.onrender.com/api/ping
-     ```
+   - Click "Create cronjob"
+   - **Title:** `video-dashboard-ping`
+   - **URL to call:** `https://video-stream-repo.onrender.com/api/ping`
+   - **Schedule:** Every 10 minutes (or your preferred interval)
    - **Notifications:** Choose your preference
-   - Click "Create Cron Job"
+   - Save and activate the job
 
 ### How It Works
 - The cron job calls `/api/ping` every 10 minutes
