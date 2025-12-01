@@ -1,0 +1,44 @@
+Date: Mon, 01 Dec 2025 07:16:19 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+CF-RAY: 9a70cc639da4d396-FRA
+access-control-allow-headers: Origin, X-Requested-With, Content-Type, Accept
+access-control-allow-methods: GET, POST, OPTIONS
+access-control-allow-origin: *
+Cache-Control: public, max-age=0
+etag: W/"559-19ac5e86c58"
+last-modified: Thu, 27 Nov 2025 15:22:15 GMT
+rndr-id: 4b73b3cc-f22c-4f83
+vary: Accept-Encoding
+x-powered-by: Express
+x-render-origin-server: Render
+cf-cache-status: DYNAMIC
+Server: cloudflare
+alt-svc: h3=":443"; ma=86400
+ 
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>Video Streaming Dashboard - Multi-Stream Monitoring</title>
+    <meta name="description" content="Professional multi-stream video monitoring dashboard with synchronized HLS playback. Monitor up to 6 live video streams simultaneously with real-time synchronization." />
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Video Streaming Dashboard - Multi-Stream Monitoring" />
+    <meta property="og:description" content="Professional multi-stream video monitoring dashboard with synchronized HLS playback." />
+    <meta property="og:type" content="website" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-YKuAZfBI.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-C7ZSMYT1.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
